@@ -40,10 +40,10 @@ public class DetallePedido {
         this.cantidadDetalle = cantidadDetalle;
     }
 
-    public DetallePedido(Long idDetalle, Producto productoIdDetalle, Pedido pedidoIdDetalle, Integer cantidadDetalle) {
+    public DetallePedido(Long idDetalle, Producto productoDetalle, Pedido pedidoDetalle, Integer cantidadDetalle) {
         this.idDetalle = idDetalle;
-        this.productoDetalle = productoIdDetalle;
-        this.pedidoDetalle = pedidoIdDetalle;
+        this.productoDetalle = productoDetalle;
+        this.pedidoDetalle = pedidoDetalle;
         this.cantidadDetalle = cantidadDetalle;
     }
 

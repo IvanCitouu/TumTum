@@ -34,7 +34,7 @@ public class UsuarioController {
         return service.findByAll();
     }
     
-    @GetMapping("/{idUsuario}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> verDetalle(@PathVariable Long id){
         Optional<Usuario> usuarioOptional = service.findById(id);
         if(usuarioOptional.isPresent()){
@@ -48,7 +48,7 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(unUsuario));
     }
 
-    @PutMapping("/{idUsuario}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> modificar(@PathVariable Long id, @RequestBody Usuario unUsuario){
         Optional<Usuario> usOptional = service.findById(id);
         if(usOptional.isPresent()){
@@ -71,7 +71,7 @@ public class UsuarioController {
         return ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping("/{idUsuario}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminar(@PathVariable Long id){
         Usuario unUsuario = new Usuario();
         unUsuario.setIdUsuario(id);

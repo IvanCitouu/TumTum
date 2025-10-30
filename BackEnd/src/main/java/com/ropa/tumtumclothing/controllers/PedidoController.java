@@ -36,7 +36,7 @@ public class PedidoController {
         return service.findByAll();
     }
 
-    @GetMapping("/{idPedido}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> verDetalle(@PathVariable Long id){
         Optional<Pedido> pedidoOptional = service.findById(id);
         if(pedidoOptional.isPresent()){
@@ -50,7 +50,7 @@ public class PedidoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(unPedido));
     }
 
-    @PutMapping("/{idPedido}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> modificar(@PathVariable Long id, @RequestBody Pedido unPedido){
         Optional<Pedido> pedidoOptional = service.findById(id);
         if(pedidoOptional.isPresent()){
@@ -68,7 +68,7 @@ public class PedidoController {
         return ResponseEntity.notFound().build();
     }
     
-    @DeleteMapping("/{idPedido}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminar(@PathVariable Long id){
         Pedido unPedido = new Pedido();
         unPedido.setIdPedido(id);

@@ -29,7 +29,7 @@ public class Pedido {
     @Column(name = "fecha_creacion", updatable = false, nullable = false)
     private LocalDateTime fechaCreacionPedido;
 
-    @OneToMany(mappedBy = "pedidoIdDetalle", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "pedidoDetalle", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DetallePedido> detalles = new ArrayList<>();
 
     public Pedido() {
