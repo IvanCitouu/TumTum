@@ -1,0 +1,42 @@
+.carrito-page {
+  padding: 20px;
+  flex: 1;
+}
+
+.carrito-page h1 {
+  margin-bottom: 20px;
+}
+
+.carrito-page table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.carrito-page th,
+.carrito-page td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: center;
+}
+
+.carrito-page th {
+  background: #f4f4f4;
+}
+
+.carrito-page .resumen {
+  text-align: right;
+}
+
+.carrito-page button {
+  background: #009688;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.carrito-page button:hover {
+  background: #00796b;
+}
