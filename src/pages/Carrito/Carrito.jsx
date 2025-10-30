@@ -5,6 +5,7 @@ import Navbar from '../../components/Navbar/Navbar';
 export default function Carrito() {
   const [carrito, setCarrito] = useState([]);
   const [usuario, setUsuario] = useState(null);
+  const [cargando, setCargando] = useState(false);
 
   useEffect(() => {
     const datos = JSON.parse(localStorage.getItem('carrito')) || [];
@@ -47,39 +48,94 @@ export default function Carrito() {
     actualizarCarrito([]);
   };
 
-  const finalizarCompra = () => {
+  const finalizarCompra = async () => {
     if (carrito.length === 0) {
       alert("Tu carrito está vacío");
       return;
     }
 
-    const ordenes = JSON.parse(localStorage.getItem("ordenes")) || [];
-    const nuevaOrden = {
-      id: "ORD" + (ordenes.length + 1).toString().padStart(3, "0"),
-      cliente: usuario?.nombre || usuario?.email || "Invitado",
-      total: carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0),
-      estado: "Pendiente"
+    if (!usuario) {
+      alert("Debes iniciar sesión para finalizar la compra");
+      return;
+    }
+
+    setCargando(true);
+
+    const pedido = {
+      estadoPedido: "Pendiente",
+      correoClientePedido: usuario.correoUsuario,
+      nombreClientePedido: usuario.nombreUsuario,
+      totalPedido: carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0),
+      detalles: carrito.map(item => ({
+        idProducto: item.id,
+        cantidadDetalle: item.cantidad,
+        precioUnitario: item.precio, // Agregado
+        nombreProducto: item.nombre  // Agregado
+      }))
     };
 
-    ordenes.push(nuevaOrden);
-    localStorage.setItem("ordenes", JSON.stringify(ordenes));
-    localStorage.removeItem("carrito");
-    setCarrito([]);
+    console.log("Enviando pedido al backend:", pedido);
 
-    alert(`Gracias por tu compra\nOrden creada: ${nuevaOrden.id}`);
+    try {
+      const res = await fetch("http://localhost:8080/tumtum/pedidos", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(pedido)
+      });
+
+      // Obtener la respuesta completa del servidor
+      const responseText = await res.text();
+      console.log("Respuesta del servidor:", responseText);
+
+      if (!res.ok) {
+        // Si hay error, mostrar más detalles
+        let mensajeError = `Error ${res.status}: `;
+        try {
+          const errorData = JSON.parse(responseText);
+          mensajeError += errorData.message || errorData.error || responseText;
+        } catch {
+          mensajeError += responseText || "Error desconocido del servidor";
+        }
+        throw new Error(mensajeError);
+      }
+
+      // Procesar respuesta exitosa
+      const respuestaExito = JSON.parse(responseText);
+      console.log("Pedido creado exitosamente:", respuestaExito);
+
+      localStorage.removeItem("carrito");
+      setCarrito([]);
+      alert("¡Gracias por tu compra! Pedido registrado correctamente.");
+
+    } catch (err) {
+      console.error("Error completo al finalizar compra:", err);
+      alert(`No se pudo registrar el pedido: ${err.message}`);
+    } finally {
+      setCargando(false);
+    }
   };
 
   const totalGeneral = carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
 
   return (
     <>
-  <Navbar />
-  <main className="carrito-page">
-    <h1>Carrito de Compras</h1>
-    {carrito.length === 0 ? (
-      <p>Tu carrito está vacío.</p>
-    ) : (
-      <>
+      <Navbar />
+      <main className="carrito-page">
+        <h1>Carrito de Compras</h1>
+        
+        {cargando && (
+          <div className="cargando">
+            <p>Procesando pedido...</p>
+          </div>
+        )}
+        
+        {carrito.length === 0 ? (
+          <p>Tu carrito está vacío.</p>
+        ) : (
+          <>
             <table className="tabla-carrito">
               <thead>
                 <tr>
@@ -100,13 +156,13 @@ export default function Carrito() {
                     </td>
                     <td>${item.precio.toLocaleString("es-CL")}</td>
                     <td>
-                      <button onClick={() => restar(index)}>-</button>
+                      <button onClick={() => restar(index)} disabled={cargando}>-</button>
                       {item.cantidad}
-                      <button onClick={() => sumar(index)}>+</button>
+                      <button onClick={() => sumar(index)} disabled={cargando}>+</button>
                     </td>
                     <td>${(item.precio * item.cantidad).toLocaleString("es-CL")}</td>
                     <td>
-                      <button onClick={() => eliminar(index)}>X</button>
+                      <button onClick={() => eliminar(index)} disabled={cargando}>X</button>
                     </td>
                   </tr>
                 ))}
@@ -115,13 +171,16 @@ export default function Carrito() {
 
             <div className="resumen">
               <p><strong>Total general:</strong> ${totalGeneral.toLocaleString("es-CL")}</p>
-              <button onClick={vaciarCarrito}>Vaciar carrito</button>
-              <button onClick={finalizarCompra}>Finalizar compra</button>
+              <button onClick={vaciarCarrito} disabled={cargando}>
+                Vaciar carrito
+              </button>
+              <button onClick={finalizarCompra} disabled={cargando}>
+                {cargando ? 'Procesando...' : 'Finalizar compra'}
+              </button>
             </div>
           </>
         )}
       </main>
-
       <footer>
         <p>&copy; 2025 TumTum Ropa. Todos los derechos reservados.</p>
       </footer>

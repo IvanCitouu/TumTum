@@ -66,26 +66,26 @@ export default function Inicio() {
 
       {/* Sección productos */}
       <div className="container">
-        <h3>NUEVO DROP</h3>
+        <h3>NUEVA DROP</h3>
         <section id="nextSection" className="productos">
           <div className="producto">
-            <Link to="/producto/tank1">
-              <img src="/img/7.png" alt="Tank1" />
-              <h2>Elixir Gray Tank Top</h2>
+            <Link to="/producto/4">
+              <img src="/img/7.png" alt="Camiseta sin mangas gris Elixir" />
+              <h2>Camiseta sin mangas gris Elixir</h2>
               <p>$19.990</p>
             </Link>
           </div>
           <div className="producto">
-            <Link to="/producto/beanie">
-              <img src="/img/1.png" alt="Beanie" />
-              <h2>Elixir Reversible Beanie</h2>
-              <p>$9.990</p>
+            <Link to="/producto/15">
+              <img src="/img/1.png" alt="Gorro reversible Elixir" />
+              <h2>Gorro reversible Elixir</h2>
+              <p>$19.990</p>
             </Link>
           </div>
           <div className="producto">
-            <Link to="/producto/jorts">
-              <img src="/img/3.png" alt="Jorts" />
-              <h2>Elixir White Denim Set JORTS</h2>
+            <Link to="/producto/12">
+              <img src="/img/3.png" alt="Conjunto de mezclilla blanca Elixir" />
+              <h2>Conjunto de mezclilla blanca Elixir</h2>
               <p>$29.990</p>
             </Link>
           </div>

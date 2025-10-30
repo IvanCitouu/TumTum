@@ -1,11 +1,29 @@
 import { useParams } from 'react-router-dom';
-import { productos } from './ProductosData';
+import { useEffect, useState } from 'react';
 import './Producto.css';
 import Navbar from '../../components/Navbar/Navbar';
 
 export default function Producto() {
   const { id } = useParams();
-  const producto = productos[id];
+  const [producto, setProducto] = useState(null);
+
+  useEffect(() => {
+    fetch(`http://localhost:8080/tumtum/productos/${id}`)
+      .then(res => res.json())
+      .then(p => {
+        const adaptado = {
+          id: p.idProducto.toString(),
+          nombre: p.nombreProducto,
+          categoria: p.categoriaProducto,
+          precio: p.precioProducto,
+          imagen: p.imgUrlProducto,
+          stock: p.stockProducto,
+          descripcion: p.descripcionProducto
+        };
+        setProducto(adaptado);
+      })
+      .catch(err => console.error('Error al cargar producto:', err));
+  }, [id]);
 
   if (!producto) return <p>Producto no encontrado</p>;
 

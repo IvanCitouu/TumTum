@@ -2,24 +2,21 @@ import './Productos.css';
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../../components/Navbar/Navbar';
+import { obtenerProductos } from '../../services/api';
 
 export default function Productos() {
   const [vista, setVista] = useState('grande');
   const [orden, setOrden] = useState('nombre');
   const [busqueda, setBusqueda] = useState('');
   const [resaltado, setResaltado] = useState(null);
+  const [productos, setProductos] = useState([]);
   const contenedorRef = useRef(null);
 
-  const productos = [
-    { id: 'camiseta', nombre: 'Camiseta de Fútbol Elixir 10 Navy Blue', precio: 35990, imagen: '/img/image.png' },
-    { id: 'tank', nombre: 'Elixir Basket Tank Top', precio: 28000, imagen: '/img/2.png' },
-    { id: 'beanie', nombre: 'Elixir Reversible Beanie', precio: 9990, imagen: '/img/1.png' },
-    { id: 'jorts', nombre: 'Elixir White Denim Set JORTS', precio: 29990, imagen: '/img/3.png' },
-    { id: 'jacket', nombre: 'Elixir Raw Denim Set JACKET', precio: 29990, imagen: '/img/4.png' },
-    { id: 'pantalon', nombre: 'Elixir X Cozy DETACHABLE jeans', precio: 89990, imagen: '/img/5.png' },
-    { id: 'pantalon1', nombre: 'Elixir White Leather Tribal Pants', precio: 59990, imagen: '/img/6.png' },
-    { id: 'tank1', nombre: 'Elixir Gray Tank Top', precio: 19990, imagen: '/img/7.png' },
-  ];
+  useEffect(() => {
+    obtenerProductos()
+      .then(setProductos)
+      .catch(err => console.error('Error al cargar productos:', err));
+  }, []);
 
   const productosOrdenados = [...productos].sort((a, b) => {
     if (orden === 'asc') return a.precio - b.precio;
@@ -55,7 +52,6 @@ export default function Productos() {
   return (
     <>
       <Navbar />
-
       <div className="buscador-contenedor">
         <div className="input-wrapper">
           <input
@@ -83,7 +79,6 @@ export default function Productos() {
           </div>
         )}
       </div>
-
       <div className="toolbar">
         <div className="view-buttons">
           <button onClick={() => cambiarVista('grande')}>
@@ -106,7 +101,6 @@ export default function Productos() {
           </select>
         </div>
       </div>
-
       <section className={`productos vista-${vista}`} ref={contenedorRef}>
         {productosOrdenados.map((p) => (
           <div

@@ -27,12 +27,11 @@ export default function Registro() {
     setForm({ ...form, [e.target.id]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const runValido = /^[0-9]{7,8}[0-9K]$/i;
     if (!runValido.test(form.run)) return alert("RUN inválido. Debe tener entre 7 y 9 caracteres, sin puntos ni guión.");
-
     if (!form.nombre || form.nombre.length > 50) return alert("Nombre requerido, máximo 50 caracteres.");
     if (!form.apellidos || form.apellidos.length > 100) return alert("Apellidos requeridos, máximo 100 caracteres.");
     if (!form.email || form.email.length > 100) return alert("Correo requerido, máximo 100 caracteres.");
@@ -44,14 +43,38 @@ export default function Registro() {
     if (!form.direccion || form.direccion.length > 300) return alert("Dirección requerida, máximo 300 caracteres.");
     if (!form.password || form.password.length < 6) return alert("Contraseña requerida, mínimo 6 caracteres.");
 
-    const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
-    const existe = usuarios.find(u => u.run === form.run || u.email === form.email);
-    if (existe) return alert("RUN o correo ya registrado");
+    const usuario = {
+      rutUsuario: form.run,
+      nombreUsuario: form.nombre,
+      apellidosUsuario: form.apellidos,
+      correoUsuario: form.email,
+      nacimientoUsuario: form.fecha,
+      regionUsuario: form.region,
+      comunaUsuario: form.comuna,
+      direccionUsuario: form.direccion,
+      contraseniaUsuario: form.password,
+      rolUsuario: "CLIENTE"
+    };
 
-    usuarios.push({ ...form, rol: "cliente" });
-    localStorage.setItem("usuarios", JSON.stringify(usuarios));
-    alert("Registro exitoso");
-    navigate("/login");
+    try {
+      const res = await fetch("http://localhost:8080/tumtum/usuarios/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(usuario)
+      });
+
+      if (res.status === 409) {
+        alert("RUN o correo ya registrado");
+      } else if (!res.ok) {
+        alert("Error al registrar");
+      } else {
+        alert("Registro exitoso");
+        navigate("/login");
+      }
+    } catch (err) {
+      console.error("Error en el registro:", err);
+      alert("Error de conexión con el servidor");
+    }
   };
 
   return (
@@ -83,7 +106,6 @@ export default function Registro() {
           </p>
         </div>
       </main>
-
       <footer>
         <p>&copy; 2025 TumTum Ropa. Todos los derechos reservados.</p>
       </footer>
