@@ -1,14 +1,14 @@
 package com.ropa.tumtumclothing.entities;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
-import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Entity
@@ -20,9 +20,13 @@ public class Usuario {
     private long idUsuario;
     private String nombreUsuario, contraseniaUsuario, correoUsuario, rolUsuario, estadoUsuario, direccionUsuario, apellidosUsuario, nacimientoUsuario, regionUsuario, comunaUsuario, rutUsuario;
 
-    @CreationTimestamp
     @Column(name = "fecha_creacion", updatable = false, nullable = false)
-    private LocalDateTime fechaCreacionUsuario;
+    private LocalDate fechaCreacionUsuario;
+
+    @PrePersist
+    protected void onCreate() {
+        this.fechaCreacionUsuario = LocalDate.now();
+    }
 
     public Usuario() {
     }
@@ -30,7 +34,7 @@ public class Usuario {
     public Usuario(long idUsuario, String nombreUsuario, String contraseniaUsuario, String correoUsuario,
             String rolUsuario, String estadoUsuario, String direccionUsuario, String apellidosUsuario,
             String nacimientoUsuario, String regionUsuario, String comunaUsuario, String rutUsuario,
-            LocalDateTime fechaCreacionUsuario) {
+            LocalDate fechaCreacionUsuario) {
         this.idUsuario = idUsuario;
         this.nombreUsuario = nombreUsuario;
         this.contraseniaUsuario = contraseniaUsuario;
@@ -142,11 +146,11 @@ public class Usuario {
         this.rutUsuario = rutUsuario;
     }
 
-    public LocalDateTime getFechaCreacionUsuario() {
+    public LocalDate getFechaCreacionUsuario() {
         return fechaCreacionUsuario;
     }
 
-    public void setFechaCreacionUsuario(LocalDateTime fechaCreacionUsuario) {
+    public void setFechaCreacionUsuario(LocalDate fechaCreacionUsuario) {
         this.fechaCreacionUsuario = fechaCreacionUsuario;
     }
 

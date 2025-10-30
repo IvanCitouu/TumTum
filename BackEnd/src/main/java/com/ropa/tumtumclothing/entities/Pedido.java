@@ -1,10 +1,9 @@
 package com.ropa.tumtumclothing.entities;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.annotations.CreationTimestamp;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Entity
@@ -25,18 +25,22 @@ public class Pedido {
     private String correoClientePedido, EstadoPedido, nombreClientePedido;
     private int totalPedido;
 
-    @CreationTimestamp
     @Column(name = "fecha_creacion", updatable = false, nullable = false)
-    private LocalDateTime fechaCreacionPedido;
+    private LocalDate fechaCreacionPedido;
 
     @OneToMany(mappedBy = "pedidoDetalle", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DetallePedido> detalles = new ArrayList<>();
+
+    @PrePersist
+    protected void onCreate() {
+        this.fechaCreacionPedido = LocalDate.now();
+    }
 
     public Pedido() {
     }
 
     public Pedido(long idPedido, String correoClientePedido, String estadoPedido, String nombreClientePedido,
-            int totalPedido, LocalDateTime fechaCreacionPedido, List<DetallePedido> productos) {
+            int totalPedido, LocalDate fechaCreacionPedido, List<DetallePedido> productos) {
         this.idPedido = idPedido;
         this.correoClientePedido = correoClientePedido;
         EstadoPedido = estadoPedido;
@@ -98,11 +102,11 @@ public class Pedido {
         this.totalPedido = totalPedido;
     }
 
-    public LocalDateTime getFechaCreacionPedido() {
+    public LocalDate getFechaCreacionPedido() {
         return fechaCreacionPedido;
     }
 
-    public void setFechaCreacionPedido(LocalDateTime fechaCreacionPedido) {
+    public void setFechaCreacionPedido(LocalDate fechaCreacionPedido) {
         this.fechaCreacionPedido = fechaCreacionPedido;
     }
 

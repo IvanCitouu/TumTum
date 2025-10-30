@@ -1,14 +1,14 @@
 package com.ropa.tumtumclothing.entities;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
-import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Entity
@@ -21,16 +21,20 @@ public class Producto {
     private String nombreProducto, descripcionProducto, categoriaProducto, imgUrlProducto, estadoProducto;
     private int stockProducto, precioProducto;
 
-    @CreationTimestamp
     @Column(name = "fecha_creacion", updatable = false, nullable = false)
-    private LocalDateTime fechaCreacionProducto;
+    private LocalDate fechaCreacionProducto;
+
+    @PrePersist
+    protected void onCreate() {
+        this.fechaCreacionProducto = LocalDate.now();
+    }
 
     public Producto() {
     }
 
     public Producto(Long idProducto, String nombreProducto, String descripcionProducto, String categoriaProducto,
             String imgUrlProducto, String estadoProducto, int stockProducto, int precioProducto,
-            LocalDateTime fechaCreacionProducto) {
+            LocalDate fechaCreacionProducto) {
         this.idProducto = idProducto;
         this.nombreProducto = nombreProducto;
         this.descripcionProducto = descripcionProducto;
@@ -106,11 +110,11 @@ public class Producto {
         this.precioProducto = precioProducto;
     }
 
-    public LocalDateTime getFechaCreacionProducto() {
+    public LocalDate getFechaCreacionProducto() {
         return fechaCreacionProducto;
     }
 
-    public void setFechaCreacionProducto(LocalDateTime fechaCreacionProducto) {
+    public void setFechaCreacionProducto(LocalDate fechaCreacionProducto) {
         this.fechaCreacionProducto = fechaCreacionProducto;
     }
 
